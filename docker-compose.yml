@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  producer:
+    build:
+      dockerfile: Dockerfile
+      context: ./metrics_producer
+    depends_on:
+      - kafka
+    volumes:
+      - ./metrics_producer:/code
+      - ./settings/:/code/settings
+    environment:
+      - KAFKA_ADDR=kafka:9092
+      - METRICS_TOPIC=SystemMetrics
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.3.0
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_CREATE_TOPICS: "SystemMetrics:1:1"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_HOST_NAME: "kafka"
