@@ -14,6 +14,8 @@ class Settings:
 	def __init__(self):
 		self.kafka_addr = self.read_mandatory('KAFKA_ADDR')
 		self.metrics_topic = self.read_mandatory('METRICS_TOPIC')
+		interval = self.read_mandatory('METRICS_INTERVAL_MS')
+		self.metrics_interval = float(interval) / 1000 # convert to seconds
 
 	@classmethod
 	def read_mandatory(self, name):
