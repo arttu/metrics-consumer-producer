@@ -15,6 +15,23 @@ services:
       - METRICS_TOPIC=SystemMetrics
       - METRICS_INTERVAL_MS=1000
 
+  consumer:
+    build:
+      dockerfile: Dockerfile
+      context: ./metrics_consumer
+    depends_on:
+      - kafka
+      - postgres
+    volumes:
+      - ./metrics_consumer:/code
+      - ./settings/:/code/settings
+    environment:
+      - KAFKA_ADDR=kafka:9092
+      - METRICS_TOPIC=SystemMetrics
+      - METRICS_CONSUMER_ID=metrics-consumer-1
+      - METRICS_GROUP_ID=metrics-group
+      - POSTGRES_ADDR=postgresql+psycopg2://test:test@postgres:5432/metrics
+
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
@@ -25,6 +42,13 @@ services:
     depends_on:
       - zookeeper
     environment:
-      KAFKA_CREATE_TOPICS: "SystemMetrics:1:1"
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_HOST_NAME: "kafka"
+      - KAFKA_CREATE_TOPICS=SystemMetrics:1:1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+
+  postgres:
+    image: postgres:12.1
+    environment:
+      - POSTGRES_DB=metrics
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test

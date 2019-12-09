@@ -29,14 +29,16 @@ class TestMetricsProducer(unittest.TestCase):
 		self.test_consumer.commit()
 
 	def test_initialization(self):
+		init_success = False
 		try:
 			producer = MetricsProducer(self.settings)
+			init_success = True
 		except:
 			self.assertFalse(True) # should never happen
-		self.assertTrue(len(producer.metrics_topic) > 0)
+
+		self.assertTrue(init_success)
 
 	def test_writing_to_kafka(self):
-		self.maxDiff = None
 		assignment = self.test_consumer.assignment()
 		partition = assignment.pop()
 

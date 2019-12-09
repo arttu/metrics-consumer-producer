@@ -1,7 +1,8 @@
-import json
 from datetime import (
 	datetime, timezone,
 )
+import json
+import socket
 
 from kafka import KafkaProducer
 import psutil
@@ -33,6 +34,7 @@ class MetricsProducer:
 	def collect_metrics(self):
 		mem = psutil.virtual_memory()
 		return {
+			'hostname': socket.gethostname(),
 			'timestamp': datetime.now(timezone.utc).isoformat(),
 			'memory_total': mem.total,
 			'memory_available': mem.available,

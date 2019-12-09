@@ -14,8 +14,15 @@ class Settings:
 	def __init__(self):
 		self.kafka_addr = self.read_mandatory('KAFKA_ADDR')
 		self.metrics_topic = self.read_mandatory('METRICS_TOPIC')
-		interval = self.read_mandatory('METRICS_INTERVAL_MS')
-		self.metrics_interval = float(interval) / 1000 # convert to seconds
+
+		interval = os.environ.get('METRICS_INTERVAL_MS', None)
+		if interval is not None:
+			self.metrics_interval = float(interval) / 1000 # convert to seconds
+
+		self.consumer_client_id = os.environ.get('METRICS_CLIENT_ID')
+		self.consumer_group_id = os.environ.get('METRICS_GROUP_ID')
+
+		self.postgres_addr = os.environ.get('POSTGRES_ADDR')
 
 	@classmethod
 	def read_mandatory(self, name):
