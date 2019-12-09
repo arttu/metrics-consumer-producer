@@ -16,9 +16,19 @@ class MetricsProducer:
 	"""
 
 	def __init__(self, settings):
-		self.kafka_producer = KafkaProducer(
-			bootstrap_servers=settings.kafka_addr,
-		)
+		if settings.kafka_security_protocol == 'SSL':
+			self.kafka_producer = KafkaProducer(
+				bootstrap_servers=settings.kafka_addr,
+				security_protocol = settings.kafka_security_protocol,
+				ssl_cafile = settings.kafka_cafile,
+				ssl_certfile = settings.kafka_certfile,
+				ssl_keyfile = settings.kafka_keyfile,
+			)
+		else:
+			self.kafka_producer = KafkaProducer(
+				bootstrap_servers=settings.kafka_addr,
+			)
+
 		self.metrics_topic = settings.metrics_topic
 		self.metrics_interval = settings.metrics_interval
 

@@ -13,12 +13,26 @@ from .postgres import (
 class MetricsConsumer:
 	def __init__(self, settings):
 		self.settings = settings
-		self.kafka_consumer = KafkaConsumer(
-			self.settings.metrics_topic,
-			bootstrap_servers=self.settings.kafka_addr,
-			client_id=self.settings.consumer_client_id,
-			group_id=self.settings.consumer_group_id,
-		)
+
+		if self.settings.kafka_security_protocol == 'SSL':
+			self.kafka_consumer = KafkaConsumer(
+				self.settings.metrics_topic,
+				bootstrap_servers=self.settings.kafka_addr,
+				security_protocol = self.settings.kafka_security_protocol,
+				ssl_cafile = self.settings.kafka_cafile,
+				ssl_certfile = self.settings.kafka_certfile,
+				ssl_keyfile = self.settings.kafka_keyfile,
+				client_id=self.settings.consumer_client_id,
+				group_id=self.settings.consumer_group_id,
+			)
+		else:
+			self.kafka_consumer = KafkaConsumer(
+				self.settings.metrics_topic,
+				bootstrap_servers=self.settings.kafka_addr,
+				client_id=self.settings.consumer_client_id,
+				group_id=self.settings.consumer_group_id,
+			)
+
 		self.pg_connection = Connection(self.settings.postgres_addr)
 
 	def start(self):

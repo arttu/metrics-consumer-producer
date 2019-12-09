@@ -10,8 +10,13 @@ services:
     volumes:
       - ./metrics_producer:/code
       - ./settings/:/code/settings
+      - ./ssl_files/:/code/ssl_files
     environment:
       - KAFKA_ADDR=kafka:9092
+      - KAFKA_SECURITY_PROTOCOL=None
+      - KAFKA_CAFILE=/code/ssl_files/aiven_ca.pem
+      - KAFKA_CERTFILE=/code/ssl_files/aiven.crt
+      - KAFKA_KEYFILE=/code/ssl_files/aiven.key
       - METRICS_TOPIC=SystemMetrics
       - METRICS_INTERVAL_MS=1000
 
@@ -25,8 +30,13 @@ services:
     volumes:
       - ./metrics_consumer:/code
       - ./settings/:/code/settings
+      - ./ssl_files/:/code/ssl_files
     environment:
       - KAFKA_ADDR=kafka:9092
+      - KAFKA_SECURITY_PROTOCOL=None
+      - KAFKA_CAFILE=/code/ssl_files/aiven_ca.pem
+      - KAFKA_CERTFILE=/code/ssl_files/aiven.crt
+      - KAFKA_KEYFILE=/code/ssl_files/aiven.key
       - METRICS_TOPIC=SystemMetrics
       - METRICS_CONSUMER_ID=metrics-consumer-1
       - METRICS_GROUP_ID=metrics-group

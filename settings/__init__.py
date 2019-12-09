@@ -13,6 +13,10 @@ class Settings:
 
 	def __init__(self):
 		self.kafka_addr = self.read_mandatory('KAFKA_ADDR')
+		self.kafka_security_protocol = os.environ.get('KAFKA_SECURITY_PROTOCOL', 'None')
+		self.kafka_cafile = os.environ.get('KAFKA_CAFILE')
+		self.kafka_certfile = os.environ.get('KAFKA_CERTFILE')
+		self.kafka_keyfile = os.environ.get('KAFKA_KEYFILE')
 		self.metrics_topic = self.read_mandatory('METRICS_TOPIC')
 
 		interval = os.environ.get('METRICS_INTERVAL_MS', None)
