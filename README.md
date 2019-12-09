@@ -21,3 +21,4 @@ Inspect the records in Postgres
     - "CA Certificate" -> "./ssl_files/aiven_ca.pem"
 - Setup new Postgres and create database "metrics"
 - Change the two occurrences of `KAFKA_SECURITY_PROTOCOL=None` in `docker-compose.yml` to `KAFKA_SECURITY_PROTOCOL=SSL`
+- Change Kafka and Postgres connection URLs to ones you have in aiven.io console
